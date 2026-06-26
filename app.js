@@ -179,6 +179,7 @@ function renderPrediction(result) {
   const scoreEl = document.querySelector("#result-score");
   const titleEl = document.querySelector("#result-title");
   const badgeEl = document.querySelector("#priority-badge");
+  const adjustmentEl = document.querySelector("#adjustment-note");
   const basisEl = document.querySelector("#basis-text");
   const probabilitiesEl = document.querySelector("#probabilities");
 
@@ -190,6 +191,10 @@ function renderPrediction(result) {
   badgeEl.textContent = result.label >= 4 ? "우선 처리 검토" : "일반 처리";
   badgeEl.style.background = result.label >= 4 ? "#fff1d6" : "#e8f5f4";
   badgeEl.style.color = result.label >= 4 ? "#8a4f08" : "#08736f";
+  adjustmentEl.textContent = result.adjusted
+    ? `모델 원예측은 중요도 ${result.modelLabel} (${formatPercent(result.probability)})였고, 안전 보정 규칙으로 최종 중요도 ${result.label}이 적용되었습니다.`
+    : `모델 원예측과 최종 등급이 같습니다. 중요도 ${result.label} (${formatPercent(result.probability)})입니다.`;
+  adjustmentEl.classList.toggle("is-adjusted", result.adjusted);
 
   probabilitiesEl.innerHTML = "";
   model.labels.forEach((label, index) => {
@@ -199,7 +204,17 @@ function renderPrediction(result) {
     const fill = document.createElement("span");
     const pct = document.createElement("strong");
 
-    name.textContent = `중요도 ${label}`;
+    li.classList.toggle("is-model-top", label === result.modelLabel);
+    li.classList.toggle("is-final", label === result.label);
+    if (label === result.modelLabel && label === result.label) {
+      name.textContent = `중요도 ${label} · 최종`;
+    } else if (label === result.modelLabel) {
+      name.textContent = `중요도 ${label} · 모델 1순위`;
+    } else if (label === result.label) {
+      name.textContent = `중요도 ${label} · 최종`;
+    } else {
+      name.textContent = `중요도 ${label}`;
+    }
     bar.className = "bar";
     fill.style.width = formatPercent(result.probabilities[index]);
     pct.textContent = formatPercent(result.probabilities[index]);
