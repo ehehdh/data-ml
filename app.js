@@ -175,13 +175,30 @@ function formatPercent(value) {
   return `${(value * 100).toFixed(1)}%`;
 }
 
+function actionForLabel(label) {
+  if (label >= 5) return "즉시 확인";
+  if (label === 4) return "우선 검토";
+  if (label === 3) return "담당 부서 조치";
+  if (label === 2) return "일반 처리";
+  return "정보 안내";
+}
+
+function confidenceForResult(result) {
+  if (result.adjusted) return "규칙 보정";
+  if (result.probability >= 0.75) return "높음";
+  if (result.probability >= 0.45) return "보통";
+  return "검토 필요";
+}
+
 function renderPrediction(result) {
   const scoreEl = document.querySelector("#result-score");
   const titleEl = document.querySelector("#result-title");
   const badgeEl = document.querySelector("#priority-badge");
   const adjustmentEl = document.querySelector("#adjustment-note");
+  const actionEl = document.querySelector("#metric-action");
+  const confidenceEl = document.querySelector("#metric-confidence");
+  const adjustedEl = document.querySelector("#metric-adjusted");
   const basisEl = document.querySelector("#basis-text");
-  const probabilitiesEl = document.querySelector("#probabilities");
 
   scoreEl.textContent = result.label;
   titleEl.textContent = model.label_descriptions[String(result.label)] || "분류 결과";
@@ -192,37 +209,12 @@ function renderPrediction(result) {
   badgeEl.style.background = result.label >= 4 ? "#fff1d6" : "#e8f5f4";
   badgeEl.style.color = result.label >= 4 ? "#8a4f08" : "#08736f";
   adjustmentEl.textContent = result.adjusted
-    ? `모델 원예측은 중요도 ${result.modelLabel} (${formatPercent(result.probability)})였고, 안전 보정 규칙으로 최종 중요도 ${result.label}이 적용되었습니다.`
-    : `모델 원예측과 최종 등급이 같습니다. 중요도 ${result.label} (${formatPercent(result.probability)})입니다.`;
+    ? "안전·재난·다수 피해 관련 표현이 감지되어 최종 중요도를 보정했습니다."
+    : "입력 문장의 의미와 라벨링 기준에 따라 최종 중요도를 산출했습니다.";
   adjustmentEl.classList.toggle("is-adjusted", result.adjusted);
-
-  probabilitiesEl.innerHTML = "";
-  model.labels.forEach((label, index) => {
-    const li = document.createElement("li");
-    const name = document.createElement("span");
-    const bar = document.createElement("div");
-    const fill = document.createElement("span");
-    const pct = document.createElement("strong");
-
-    li.classList.toggle("is-model-top", label === result.modelLabel);
-    li.classList.toggle("is-final", label === result.label);
-    if (label === result.modelLabel && label === result.label) {
-      name.textContent = `중요도 ${label} · 최종`;
-    } else if (label === result.modelLabel) {
-      name.textContent = `중요도 ${label} · 모델 1순위`;
-    } else if (label === result.label) {
-      name.textContent = `중요도 ${label} · 최종`;
-    } else {
-      name.textContent = `중요도 ${label}`;
-    }
-    bar.className = "bar";
-    fill.style.width = formatPercent(result.probabilities[index]);
-    pct.textContent = formatPercent(result.probabilities[index]);
-
-    bar.appendChild(fill);
-    li.append(name, bar, pct);
-    probabilitiesEl.appendChild(li);
-  });
+  actionEl.textContent = actionForLabel(result.label);
+  confidenceEl.textContent = confidenceForResult(result);
+  adjustedEl.textContent = result.adjusted ? "적용" : "미적용";
 }
 
 function runPrediction() {
@@ -245,12 +237,6 @@ async function init() {
   document.querySelector("#predict-button").addEventListener("click", runPrediction);
   document.querySelector("#clear-button").addEventListener("click", () => {
     document.querySelector("#complaint-text").value = "";
-  });
-  document.querySelectorAll("[data-example]").forEach((button) => {
-    button.addEventListener("click", () => {
-      document.querySelector("#complaint-text").value = button.dataset.example;
-      runPrediction();
-    });
   });
   runPrediction();
 }

@@ -40,12 +40,6 @@
             <button id="predict-button" type="button">분류하기</button>
             <button class="ghost" id="clear-button" type="button">초기화</button>
           </div>
-          <div class="examples" aria-label="예시 민원">
-            <button type="button" data-example="도로 중앙분리대가 파손되어 차량이 급정거하고 있습니다. 야간 사고 위험이 커서 즉시 조치가 필요합니다.">교통 안전</button>
-            <button type="button" data-example="과태료 납부 기한과 납부 방법이 궁금합니다. 어디에서 확인할 수 있나요?">단순 문의</button>
-            <button type="button" data-example="아파트 단지 옆 공사장에서 새벽마다 소음과 먼지가 심합니다. 여러 세대가 반복적으로 피해를 겪고 있습니다.">생활 불편</button>
-            <button type="button" data-example="하천 산책로 난간이 흔들리고 일부가 떨어져 있습니다. 어린이와 노인이 자주 이용하는 길이라 빠른 보수가 필요합니다.">시설 위험</button>
-          </div>
         </div>
 
         <div class="result-pane" aria-live="polite">
@@ -55,83 +49,24 @@
             <span id="result-title">모델을 불러오는 중</span>
           </div>
           <div id="priority-badge" class="priority-badge">준비 중</div>
-          <p id="adjustment-note" class="adjustment-note">모델 원예측과 최종 등급을 계산하고 있습니다.</p>
-          <div class="probability-heading">
-            <h2>모델 원예측 확률</h2>
-            <p>아래 막대는 안전 보정 전 모델이 계산한 중요도별 확률입니다.</p>
+          <p id="adjustment-note" class="adjustment-note">최종 중요도를 계산하고 있습니다.</p>
+          <div class="result-metrics" aria-label="분류 보조 지표">
+            <div>
+              <span>처리 권장</span>
+              <strong id="metric-action">-</strong>
+            </div>
+            <div>
+              <span>판정 신뢰도</span>
+              <strong id="metric-confidence">-</strong>
+            </div>
+            <div>
+              <span>보정 여부</span>
+              <strong id="metric-adjusted">-</strong>
+            </div>
           </div>
-          <ol class="probabilities" id="probabilities"></ol>
           <div class="basis">
             <h2>판단 기준</h2>
             <p id="basis-text">입력 문장을 분석하면 기준 설명이 표시됩니다.</p>
-          </div>
-        </div>
-      </section>
-
-      <section class="example-library" aria-label="중요도별 예시 민원">
-        <div class="section-heading">
-          <h2>중요도별 예시 민원</h2>
-          <p>각 등급의 판단 차이를 확인할 수 있는 테스트 문장입니다.</p>
-        </div>
-        <div class="example-grid">
-          <div class="example-group">
-            <h3>중요도 1</h3>
-            <p>단순 문의·정보 확인</p>
-            <div class="example-list">
-              <button type="button" data-example="주민등록등본 인터넷 발급 방법과 수수료가 궁금합니다.">주민등록등본 발급 방법과 수수료가 궁금합니다.</button>
-              <button type="button" data-example="과태료 납부 기한과 납부 방법을 어디에서 확인할 수 있나요?">과태료 납부 기한과 방법을 알고 싶습니다.</button>
-              <button type="button" data-example="청년 지원금 신청 대상과 제출 서류를 알려주세요.">청년 지원금 신청 대상과 제출 서류를 알려주세요.</button>
-              <button type="button" data-example="공영주차장 월정기권 신청 절차가 궁금합니다.">공영주차장 월정기권 신청 절차가 궁금합니다.</button>
-              <button type="button" data-example="건축물대장 열람은 온라인으로 가능한가요?">건축물대장 온라인 열람 가능 여부를 문의합니다.</button>
-            </div>
-          </div>
-
-          <div class="example-group">
-            <h3>중요도 2</h3>
-            <p>개인 불편 중심 일반 요청</p>
-            <div class="example-list">
-              <button type="button" data-example="중앙대로변 화단 제거해주세요.">중앙대로변 화단 제거를 요청합니다.</button>
-              <button type="button" data-example="중앙대로변 화단 정비와 잡초 제거를 부탁드립니다.">중앙대로변 화단 정비와 잡초 제거를 부탁드립니다.</button>
-              <button type="button" data-example="공원 울타리 주변 나무 가지치기를 요청합니다.">공원 울타리 주변 나무 가지치기를 요청합니다.</button>
-              <button type="button" data-example="회야강 산책로 제초작업을 요청드립니다.">회야강 산책로 제초작업을 요청드립니다.</button>
-              <button type="button" data-example="가게 간판이 가로수에 가려 잘 보이지 않습니다. 가지치기 요청드립니다.">가게 간판을 가리는 가로수 가지치기를 요청합니다.</button>
-            </div>
-          </div>
-
-          <div class="example-group">
-            <h3>중요도 3</h3>
-            <p>구체 조치가 필요한 일반 민원</p>
-            <div class="example-list">
-              <button type="button" data-example="도로 포트홀이 반복적으로 생겨 차량 통행이 불편합니다. 보수 요청합니다.">도로 포트홀이 반복되어 보수를 요청합니다.</button>
-              <button type="button" data-example="아파트 옆 공사 소음과 먼지 때문에 여러 세대가 불편을 겪고 있습니다.">공사 소음과 먼지로 여러 세대가 불편합니다.</button>
-              <button type="button" data-example="공원 화장실 세면대가 계속 고장 나 이용이 어렵습니다. 수리 부탁드립니다.">공원 화장실 세면대 수리를 요청합니다.</button>
-              <button type="button" data-example="불법 현수막이 계속 설치되어 도시 미관과 보행에 불편을 줍니다. 정비 바랍니다.">불법 현수막 반복 설치 정비를 요청합니다.</button>
-              <button type="button" data-example="하수구 악취와 배수 불량이 반복되어 점검이 필요합니다.">하수구 악취와 배수 불량 점검이 필요합니다.</button>
-            </div>
-          </div>
-
-          <div class="example-group">
-            <h3>중요도 4</h3>
-            <p>공공안전·다수 피해 우선 처리</p>
-            <div class="example-list">
-              <button type="button" data-example="학교 앞 횡단보도 신호등이 고장 나 학생들이 차도로 건너고 있습니다. 오늘 등교 시간 전에 점검 부탁드립니다.">학교 앞 신호등 고장으로 학생들이 차도로 건넙니다.</button>
-              <button type="button" data-example="하천 산책로 난간이 흔들려 어린이와 노인이 넘어질 위험이 있습니다. 빠른 보수 요청합니다.">산책로 난간이 흔들려 어린이와 노인이 위험합니다.</button>
-              <button type="button" data-example="도로 중앙분리대가 파손되어 차량이 급정거하고 있습니다. 야간 사고 위험이 커서 즉시 조치가 필요합니다.">중앙분리대 파손으로 차량 사고 위험이 큽니다.</button>
-              <button type="button" data-example="어린이집 앞 불법주정차 때문에 보행자가 차도로 밀려 사고 위험이 큽니다.">어린이집 앞 불법주정차로 보행자가 위험합니다.</button>
-              <button type="button" data-example="아파트 여러 동에서 지하주차장 누수가 반복되어 미끄럼 사고 위험이 큽니다.">여러 동 지하주차장 누수로 미끄럼 사고 위험이 큽니다.</button>
-            </div>
-          </div>
-
-          <div class="example-group">
-            <h3>중요도 5</h3>
-            <p>생명·재난·안보 즉시 대응</p>
-            <div class="example-list">
-              <button type="button" data-example="상가 건물에서 가스 냄새가 나고 누출이 의심됩니다. 폭발 위험이 있어 즉시 출동 요청합니다.">가스 누출과 폭발 위험으로 즉시 출동이 필요합니다.</button>
-              <button type="button" data-example="공사장 외벽이 붕괴될 것처럼 기울어 보이고 사람들이 아래를 지나갑니다. 즉시 통제해 주세요.">공사장 외벽 붕괴 위험으로 즉시 통제가 필요합니다.</button>
-              <button type="button" data-example="집단 식중독 의심 증상이 여러 명에게 발생했습니다. 감염병 신고와 긴급 조치가 필요합니다.">집단 감염병 의심으로 긴급 조치가 필요합니다.</button>
-              <button type="button" data-example="도로에 전선이 끊어져 물웅덩이에 닿아 있습니다. 감전 사고가 우려됩니다.">끊어진 전선과 물웅덩이로 감전 사고가 우려됩니다.</button>
-              <button type="button" data-example="지하차도가 갑자기 침수되어 차량이 갇혀 있습니다. 구조 요청이 필요합니다.">지하차도 침수로 차량이 갇혀 구조가 필요합니다.</button>
-            </div>
           </div>
         </div>
       </section>
