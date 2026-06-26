@@ -101,6 +101,7 @@ h1 {
 
 .input-pane,
 .result-pane,
+.example-group,
 .reference > div {
   background: var(--surface);
   border: 1px solid var(--line);
@@ -198,20 +199,61 @@ button.ghost,
   font-weight: 800;
 }
 
+.adjustment-note {
+  margin: 12px 0 0;
+  padding: 12px 14px;
+  border-radius: 8px;
+  background: #eef3fb;
+  color: #243651;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.adjustment-note.is-adjusted {
+  background: #fff6df;
+  color: #73460d;
+}
+
+.probability-heading {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.probability-heading h2 {
+  margin-bottom: 4px;
+}
+
+.probability-heading p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
 .probabilities {
   display: grid;
   gap: 9px;
-  margin: 22px 0;
+  margin: 14px 0 22px;
   padding: 0;
   list-style: none;
 }
 
 .probabilities li {
   display: grid;
-  grid-template-columns: 80px 1fr 58px;
+  grid-template-columns: 132px 1fr 58px;
   gap: 10px;
   align-items: center;
   font-size: 14px;
+}
+
+.probabilities li.is-model-top {
+  font-weight: 800;
+}
+
+.probabilities li.is-final:not(.is-model-top) {
+  color: #8a4f08;
+  font-weight: 800;
 }
 
 .bar {
@@ -234,6 +276,16 @@ button.ghost,
   border-top: 1px solid var(--line);
 }
 
+.section-heading {
+  margin-bottom: 14px;
+}
+
+.section-heading p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
 h2 {
   margin: 0 0 8px;
   font-size: 18px;
@@ -254,6 +306,51 @@ h2 {
   margin-top: 20px;
 }
 
+.example-library {
+  margin-top: 20px;
+}
+
+.example-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.example-group {
+  padding: 16px;
+}
+
+.example-group h3 {
+  margin: 0;
+  font-size: 17px;
+  letter-spacing: 0;
+}
+
+.example-group p {
+  min-height: 42px;
+  margin: 6px 0 12px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.example-list {
+  display: grid;
+  gap: 8px;
+}
+
+.example-list button {
+  min-height: 48px;
+  padding: 10px 12px;
+  background: #f7f9fd;
+  color: #203657;
+  border: 1px solid #d7e1ef;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
 .reference > div {
   padding: 20px;
 }
@@ -261,6 +358,7 @@ h2 {
 @media (max-width: 860px) {
   .hero,
   .workspace,
+  .example-grid,
   .reference {
     grid-template-columns: 1fr;
   }
