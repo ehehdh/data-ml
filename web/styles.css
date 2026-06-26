@@ -101,7 +101,6 @@ h1 {
 
 .input-pane,
 .result-pane,
-.example-group,
 .reference > div {
   background: var(--surface);
   border: 1px solid var(--line);
@@ -139,8 +138,7 @@ textarea:focus {
   border-color: var(--blue);
 }
 
-.actions,
-.examples {
+.actions {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
@@ -164,7 +162,7 @@ button:hover {
 }
 
 button.ghost,
-.examples button {
+button.secondary {
   background: #eef3fb;
   color: #203657;
   border: 1px solid #d7e1ef;
@@ -214,76 +212,42 @@ button.ghost,
   color: #73460d;
 }
 
-.probability-heading {
-  margin-top: 18px;
-  padding-top: 18px;
-  border-top: 1px solid var(--line);
-}
-
-.probability-heading h2 {
-  margin-bottom: 4px;
-}
-
-.probability-heading p {
-  margin: 0;
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.55;
-}
-
-.probabilities {
+.result-metrics {
   display: grid;
-  gap: 9px;
-  margin: 14px 0 22px;
-  padding: 0;
-  list-style: none;
-}
-
-.probabilities li {
-  display: grid;
-  grid-template-columns: 132px 1fr 58px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
-  align-items: center;
-  font-size: 14px;
+  margin-top: 16px;
 }
 
-.probabilities li.is-model-top {
-  font-weight: 800;
+.result-metrics div {
+  min-height: 78px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f7f9fd;
 }
 
-.probabilities li.is-final:not(.is-model-top) {
-  color: #8a4f08;
-  font-weight: 800;
-}
-
-.bar {
-  height: 10px;
-  overflow: hidden;
-  border-radius: 999px;
-  background: #e9eef6;
-}
-
-.bar span {
+.result-metrics span,
+.result-metrics strong {
   display: block;
-  height: 100%;
-  width: 0;
-  border-radius: inherit;
-  background: linear-gradient(90deg, var(--teal), var(--blue));
+}
+
+.result-metrics span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.result-metrics strong {
+  margin-top: 8px;
+  color: #203657;
+  font-size: 18px;
 }
 
 .basis {
+  margin-top: 18px;
   padding-top: 18px;
   border-top: 1px solid var(--line);
-}
-
-.section-heading {
-  margin-bottom: 14px;
-}
-
-.section-heading p {
-  margin: 0;
-  color: var(--muted);
-  line-height: 1.6;
 }
 
 h2 {
@@ -306,51 +270,6 @@ h2 {
   margin-top: 20px;
 }
 
-.example-library {
-  margin-top: 20px;
-}
-
-.example-grid {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 14px;
-}
-
-.example-group {
-  padding: 16px;
-}
-
-.example-group h3 {
-  margin: 0;
-  font-size: 17px;
-  letter-spacing: 0;
-}
-
-.example-group p {
-  min-height: 42px;
-  margin: 6px 0 12px;
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 1.5;
-}
-
-.example-list {
-  display: grid;
-  gap: 8px;
-}
-
-.example-list button {
-  min-height: 48px;
-  padding: 10px 12px;
-  background: #f7f9fd;
-  color: #203657;
-  border: 1px solid #d7e1ef;
-  text-align: left;
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1.35;
-}
-
 .reference > div {
   padding: 20px;
 }
@@ -358,7 +277,7 @@ h2 {
 @media (max-width: 860px) {
   .hero,
   .workspace,
-  .example-grid,
+  .result-metrics,
   .reference {
     grid-template-columns: 1fr;
   }
