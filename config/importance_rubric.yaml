@@ -1,0 +1,159 @@
+# Civil complaint importance/urgency rubric
+#
+# Purpose:
+# - Operational labels for training a complaint priority classifier.
+# - These labels do not replace legal judgment, emergency dispatch, or official
+#   administrative disposition.
+#
+# Legal/procedure anchors checked on 2026-06-26:
+# - Civil Petitions Treatment Act: https://www.law.go.kr/LSW/lsInfoP.do?lsiSeq=239293
+# - Enforcement Decree of the Civil Petitions Treatment Act:
+#   https://law.go.kr/LSW/lsInfoP.do?lsiSeq=181064
+# - E-People complaint processing guide:
+#   https://www.epeople.go.kr/nep/pttn/gnrlPttn/pttnNtrcnContent.npaid
+# - MOIS complaint handling standards table notice:
+#   https://www.mois.go.kr/frt/bbs/type001/commonSelectBoardArticle.do?bbsId=BBSMSTR_000000000016&nttId=126603
+# - Framework Act on the Management of Disasters and Safety:
+#   https://www.law.go.kr/LSW/lsInfoP.do?ancYnChk=0&lsId=009640
+# - Infectious Disease Control and Prevention Act:
+#   https://www.law.go.kr/LSW/lsInfoP.do?ancYnChk=0&lsId=001792
+# - Safety e-Report guide:
+#   https://www.mois.go.kr/frt/sub/a06/b10/safetyReport/screen.do
+# - Act on Anti-Terrorism for the Protection of Citizens and Public Security:
+#   https://law.go.kr/LSW/lsInfoP.do?lsiSeq=181624
+
+principles:
+  - "Importance means expected harm or public value if the complaint is not handled."
+  - "Urgency means how quickly harm can occur or expand if handling is delayed."
+  - "Simple inquiries stay low unless the content itself contains safety, health, illegality, vulnerable-group, or large-scale harm."
+  - "Polite endings such as '감사하겠습니다' or '부탁드립니다' must not turn a real request into a thanks-only complaint."
+  - "Category alone is not enough for importance 5; there must be direct life, body, disaster, health-spread, security, or severe property risk."
+
+importance:
+  5:
+    label: "critical"
+    criteria:
+      - "Direct or imminent risk to life, body, major property, disaster safety, public health spread, or national/public security."
+      - "Examples: fire, gas leak, electric shock, collapse, flooding, earthquake damage, evacuation, serious injury, food poisoning cluster, infection spread, explosives, terrorism."
+    basis_tags:
+      - LIFE_SAFETY
+      - PUBLIC_HEALTH
+      - SECURITY_RISK
+  4:
+    label: "high"
+    criteria:
+      - "Public safety or legal violation with likely harm to many people, vulnerable groups, traffic safety, or public infrastructure."
+      - "Examples: child-zone/crosswalk illegal parking, dangerous road or manhole, broken signal/crosswalk safety issue, illegal construction affecting residents, sanitation hazard."
+    basis_tags:
+      - TRAFFIC_SAFETY
+      - PUBLIC_INFRA
+      - VULNERABLE_GROUP
+      - LEGAL_VIOLATION
+      - MULTIPLE_RESIDENTS
+  3:
+    label: "normal_action"
+    criteria:
+      - "Concrete action is needed, but no immediate serious public harm is visible."
+      - "Examples: facility repair, administrative delay, repeated inconvenience, ordinary enforcement request, individual rights inconvenience."
+    basis_tags:
+      - FACILITY_MAINTENANCE
+      - SERVICE_DELAY
+      - REPEATED_INCONVENIENCE
+  2:
+    label: "low_action"
+    criteria:
+      - "Ordinary individual inconvenience or routine request with limited public harm signal."
+    basis_tags:
+      - ROUTINE_REQUEST
+      - INDIVIDUAL_INCONVENIENCE
+  1:
+    label: "very_low"
+    criteria:
+      - "Simple question, procedure/info request, thanks, or general suggestion without concrete harm or action need."
+    basis_tags:
+      - STANDARD_INQUIRY
+      - THANKS
+
+urgency:
+  5:
+    label: "immediate"
+    criteria:
+      - "Ongoing or same-day danger: fire, gas leak, electric shock, collapse, flooding, evacuation, active injury, infection/food poisoning spread, explosives, terrorism."
+  4:
+    label: "very_fast"
+    criteria:
+      - "Likely harm within days or repeated exposure involving vulnerable groups, traffic safety, public health, or dangerous infrastructure."
+  3:
+    label: "fast"
+    criteria:
+      - "Should be handled sooner than routine: enforcement, repeated nuisance, repair with potential worsening, legal violation."
+  2:
+    label: "routine"
+    criteria:
+      - "Normal administrative handling is acceptable."
+  1:
+    label: "not_time_sensitive"
+    criteria:
+      - "No clear deadline or harm expansion: simple inquiry, thanks, general suggestion."
+
+priority_score:
+  formula: "importance * 10 + urgency"
+  note: "Use this only for queue ordering; keep importance and urgency as separate training labels."
+
+rule_v3:
+  intent:
+    - "Conservative pseudo-labeling for model training."
+    - "Every row receives a label, but only high-confidence rows are marked trainable=true."
+    - "Ambiguous or internally inconsistent labels are marked needs_review=true and excluded from the main training file."
+  category_first:
+    SIMPLE_INQUIRY:
+      cap: "importance<=1, urgency<=1 unless direct safety/health/security evidence exists"
+      examples:
+        - "과태료 납부 방법 문의 -> 1/1"
+        - "담당부서, 처리절차, 서류, 가상계좌 문의 -> 1/1"
+    ENFORCEMENT:
+      cap: "ordinary illegal act/fine request usually importance=3, urgency=3"
+      examples:
+        - "일반 불법주차 과태료 부과 요청 -> 3/3"
+        - "장애인 주차구역 침해 -> 4/3"
+        - "소화전 앞 불법주정차로 화재진압 지장 -> 5/5"
+    FACILITY_ENVIRONMENT:
+      cap: "routine weeds/tree/cleaning requests stay below high priority unless safety risk is explicit"
+      examples:
+        - "도로 옆 풀 제거 요청 -> 2/2"
+        - "보행불편, 해충 등 제한적 공공불편 -> 3/2"
+        - "시야 가림과 사고위험이 함께 있음 -> 4/4"
+    PUBLIC_HEALTH:
+      cap: "health-center/place names alone are not health risk evidence"
+      examples:
+        - "음식점 위생 점검 요청 -> 3/3"
+        - "여러 사람 식중독, 구토, 설사, 응급실 -> 5/5"
+        - "집단감염 또는 감염 확산 -> 5/5"
+    LIFE_SAFETY_SECURITY:
+      cap: "direct life/body/disaster/security evidence can reach 5"
+      examples:
+        - "화재, 가스 누출, 감전, 붕괴, 침수, 대피, 부상 -> 5/4~5"
+        - "화재 발생시 피난, 대피 설계, 소방시설 점검 같은 예방 요청 -> 4/3"
+        - "테러, 폭발물, 보안시설 위협 -> 5/5"
+    SAFETY_PREVENTION:
+      cap: "importance=4, urgency=3"
+      examples:
+        - "화재경보기와 소화시설 종합점검 요청 -> 4/3"
+        - "화재 발생시 옥상 대피를 위한 설계 검토 요청 -> 4/3"
+  validation:
+    hard_flags:
+      - "SIMPLE_INQUIRY_HIGH_SCORE: simple inquiry cannot be importance>=3."
+      - "CRITICAL_WITHOUT_STRONG_EVIDENCE: importance 5 requires direct strong evidence."
+      - "ENVIRONMENT_CRITICAL_REVIEW: routine environment maintenance cannot be critical without explicit danger."
+      - "PAYMENT_ADMIN_HIGH_SCORE_REVIEW: payment/tax/fine administration should not become high priority without separate risk evidence."
+      - "HIGH_SCORE_WITHOUT_EVIDENCE: importance>=4 needs explicit evidence tags."
+    false_positive_guards:
+      - "Do not match short symptom words through normalized word boundaries: e.g. '진해구 토지' must not create '구토', and '건설사' must not create '설사'."
+      - "Place names or agencies such as 보건소 are not PUBLIC_HEALTH evidence by themselves."
+      - "Disaster preparedness questions such as 지진대피 행동요령 are SIMPLE_INQUIRY unless they report current harm."
+    workflow:
+      - "Write all labels to rule_v3_all.csv."
+      - "Write trainable=true rows to rule_v3_trainable.csv."
+      - "Write needs_review=true rows to rule_v3_needs_review.csv."
+      - "Write 500 stratified review samples per importance score to rule_v3_review_2500.csv."
+      - "Inspect the review sample before model training; fix rules or manually relabel recurring error types."

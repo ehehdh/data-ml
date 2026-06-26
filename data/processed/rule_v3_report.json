@@ -1,0 +1,43 @@
+{
+  "input": "outputs\\complaints_clustered.csv",
+  "outputs": {
+    "all": "outputs\\rule_v3_all.csv",
+    "trainable": "outputs\\rule_v3_trainable.csv",
+    "needs_review": "outputs\\rule_v3_needs_review.csv",
+    "review_sample": "outputs\\rule_v3_review_2500.csv"
+  },
+  "processed": 900000,
+  "trainable": 852649,
+  "needs_review": 47351,
+  "importance_counts": {
+    "1": 162478,
+    "2": 66399,
+    "3": 599011,
+    "4": 64942,
+    "5": 7170
+  },
+  "urgency_counts": {
+    "1": 162478,
+    "2": 300310,
+    "3": 398832,
+    "4": 32038,
+    "5": 6342
+  },
+  "priority_type_counts": {
+    "ENFORCEMENT": 359418,
+    "ROUTINE_ACTION": 233458,
+    "SIMPLE_INQUIRY": 162478,
+    "ROUTINE_ADMIN": 47351,
+    "ACCESSIBILITY_ENFORCEMENT": 32764,
+    "TRAFFIC_SAFETY": 31687,
+    "FACILITY_ENVIRONMENT": 19501,
+    "PUBLIC_HEALTH_INSPECTION": 5682,
+    "LIFE_SAFETY": 4539,
+    "PUBLIC_HEALTH": 2422,
+    "SAFETY_PREVENTION": 491,
+    "SECURITY_RISK": 209
+  },
+  "validation_flag_counts": {},
+  "review_sample_rows": 2500,
+  "model": "rubric_rules_v3"
+}
